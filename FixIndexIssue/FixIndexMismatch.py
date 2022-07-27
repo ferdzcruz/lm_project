@@ -1,6 +1,6 @@
 import argparse
 from lm_var import *
-from lm_actions import setadmin, stagelandmark, activatelandmark, dbverify, manageda, pause
+from lm_actions import setadmin, stagelandmark, activatelandmark, dbverify, manageda, pause, move_logs
 from subprocess import call
 import os
 
@@ -10,8 +10,12 @@ parser.add_argument(
     "-p", "--prodline", type=str, required=True, metavar="", help="Enter dataarea ex: lmghr"
 )
 parser.add_argument(
+    "-wd", "--working_directory", type=str, required=True, metavar="", help="Enter working directory ex: CHG12345"
+)
+parser.add_argument(
     "-o", "--option", type=str, required=True, metavar="", help="Enter what is needed to fix", choices=["varchar", "charset"]
 )
+
 args = parser.parse_args()
 
 # 2
@@ -45,6 +49,7 @@ if __name__ == '__main__':
     phase3 = activatelandmark(args.prodline)
     phase4 = dbverify(args.prodline)
     phase5 = manageda(args.prodline)
+    cleanup_logs = move_logs(args.working_directory)
     if args.option == "varchar":
         call(action_varchar, shell=True)
 
@@ -52,16 +57,22 @@ if __name__ == '__main__':
         call(action1_charset_set, shell=True)
         call(action2_charset_default,shell=True)
 
+print('\n',setadmin.__doc__,'\n')
 call(phase1, shell=True)
-pause()
-print(stagelandmark.__doc__)
+print('\n',stagelandmark.__doc__,'\n')
 call(phase2, shell=True)
 pause()
-print("running activatelandmark...")
+print('\n',activatelandmark.__doc__,'\n')
 call(phase3, shell=True)
 pause()
+print('\n',dbverify.__doc__,'\n')
 call(phase4, shell=True)
+print('\n',manageda.__doc__,'\n')
 call(phase5, shell=True)
+print('\n',move_logs.__doc__,'\n')
+call(cleanup_logs,shell=True)
+
+
 
 
 

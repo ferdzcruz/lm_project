@@ -1,6 +1,6 @@
 import argparse
 from lm_var import *
-from lm_actions import setadmin, stagelandmark, activatelandmark, dbverify, manageda, pause, move_logs
+from lm_actions import setadmin, stagelandmark, activatelandmark, dbverify, manageda, pause, move_logs, displayda
 from subprocess import call
 import os
 
@@ -45,6 +45,7 @@ if __name__ == '__main__':
     action1_charset_set = command.changeda_charset()
     action2_charset_default = command.changeda_charset_d()
     phase1 = setadmin(args.prodline)
+    phase1a = displayda(args.prodline)
     phase2 = stagelandmark(args.prodline)
     phase3 = activatelandmark(args.prodline)
     phase4 = dbverify(args.prodline)
@@ -59,6 +60,9 @@ if __name__ == '__main__':
 
 print('\n',setadmin.__doc__,'\n')
 call(phase1, shell=True)
+print('\n',displayda.__doc__,'\n')
+call(phase1a, shell=True)
+pause()
 print('\n',stagelandmark.__doc__,'\n')
 call(phase2, shell=True)
 pause()
@@ -71,11 +75,3 @@ print('\n',manageda.__doc__,'\n')
 call(phase5, shell=True)
 print('\n',move_logs.__doc__,'\n')
 call(cleanup_logs,shell=True)
-
-
-
-
-
-
-
-

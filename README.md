@@ -20,4 +20,9 @@ optional arguments:
   -p , --prodline       Enter dataarea ex: lmghr
   -wd , --working_directory
                         Enter working directory ex: CHG12345
+<<<<<<< HEAD
   -o , --option         Enter what is needed to fix
+=======
+  -o , --option         Enter what is needed to fix
+
+>>>>>>> 5e9ee3ce6e10a2fc93db84c47730bae1ebf5433c

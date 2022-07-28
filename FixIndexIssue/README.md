@@ -1,4 +1,4 @@
-This is utility will fix the issue on index mismatch
+This utility will fix the issue on index mismatch after a Data copy
   1. varchar setting
   2. Charset setting
 

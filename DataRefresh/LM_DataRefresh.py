@@ -11,7 +11,6 @@ parser.add_argument('-sp', '--sp', required=True, help="SOURCE productline")
 parser.add_argument('-tp', '--tp', required=True, help="TARGET productline")
 parser.add_argument('-pf', '--pf', required=True, help="Overwrite PFlows", choices=["Y", "N"])
 parser.add_argument('-cd', '--cd', required=True, help="Overwrite Configuration Data", choices=["Y", "N"])
-#parser.add_argument('-id', '--id', required=True, help="Overwrite Identities", choices=["Y", "N"])
 parser.add_argument('-cw', '--cw', required=True, help="Cleanup WorkUnits", choices=["Y", "N"])
 parser.add_argument('-o', '--options', required=True, help="Options", choices=["lm-tool", "sql-tool"])
 args = parser.parse_args()
@@ -228,7 +227,6 @@ sp = args.sp
 tp = args.tp
 pf = args.pf
 cd = args.cd
-#id = args.id
 cw = args.cw
 
 wrkdir = os.path.join('D:\\', 'lmsops', 'working', chg)

@@ -41,6 +41,7 @@ class Changeda():
 command = Changeda(args.prodline, args.option)
 
 if __name__ == '__main__':
+    #variables for actions
     action_varchar = command.changeda_varchar()
     action1_charset_set = command.changeda_charset()
     action2_charset_default = command.changeda_charset_d()
@@ -51,6 +52,7 @@ if __name__ == '__main__':
     phase4 = dbverify(args.prodline)
     phase5 = manageda(args.prodline)
     cleanup_logs = move_logs(args.working_directory)
+    
     if args.option == "varchar":
         call(action_varchar, shell=True)
 

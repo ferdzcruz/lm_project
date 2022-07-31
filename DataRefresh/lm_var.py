@@ -1,15 +1,49 @@
-#Group of PfiTables
-pfworkunits = '--ignore PfiWorkUnitInputData,AsyncActionRequest,ActionRequest,PfiActivity,PfiActivityVariable,PfiMetrics,PfiMetricsSummary,PfiQueue,PfiQueueAction,PfiQueueAssignment,PfiQueueReminder,PfiQueueTask,PfiWorkunit,PfiWorkunitFolder,PfiWorkunitState,PfiWorkunitVariable,PfiErrorMessage '
-pflows = ' PfiFlowDefinition PfiFlowVersion PfiServiceDefinition PfiServiceFlowDefinition PfiServiceVariable PfiTrigger PfiTriggerFolder PfiTriggerVariable '
-pficonfig = ' PfiChannel PfiConfiguration PfiConfigurationProperty PfiClassicConnection PfiFTPConnection PfiFrontOfficeConnection PfiJDBCConnection PfiJMSConnection PfiLandmarkConnection PfiM3Connection PfiMQConnection PfiSystemCommandConnection PfiTXConnection PfiWebRunConnection '
+from lm_functions import Databackup
+from parameters import dataset as params
 
-#Excluded Tables
-excluded_table_list = ' SecurityClass ContextProperty ConfigurationParameter OAuth PfiChannel PfiChannelField PfiClassicConnection PfiCloverleafConnection PfiComparisonActivity PfiComparisonWorkunit PfiConfiguration PfiConfigurationProperty PfiEDICarrier PfiEDIWorkFile PfiEmailConnection PfiEventHubConnection PfiFTPConnection PfiFileActivityConnection PfiFrontOfficeConnection PfiIONConnection PfiJDBCConnection PfiJMSConnection PfiLandmarkConnection PfiLdapConnection PfiM3Connection PfiMQConnection PfiReceiver PfiSMSConnection PfiServer PfiSystemCommandConnection PfiTXConnection PfiWebRunConnection PfiWebServiceConnection PfiWorkunitState Ping ProfileLog ProfileLogEntry ProfileLogIntermediateEntry '
+#env_backup
+#Argument
+cmd_backup = Databackup(params["EnvType"], params["SourceProductline"])
 
-#
+#backup Type
+environment_backup = cmd_backup.env_backup()
+lm_full_backup = cmd_backup.full_backup()
+lm_no_wu_backup = cmd_backup.nowu_backup()
+
+#Gen Role/Roaming backup
+rolesec_backup = cmd_backup.export_gen_rolesecclass_backup()
+roamiuprof_backup = cmd_backup.export_gen_ruiprofile_backup()
+
+#configuration data backup
+cd_backup = cmd_backup.cddata_backup()
+cdsec_backup = cmd_backup.cddatasec_backup()
+
+#excluded_tables_for SQL
+excluded_backup = cmd_backup.exclude_data_backup()
 
 
 
+#data validations
+
+pl = params['SourceProductline'] or params['TargetProductline']
+env = params['EnvType']
+cmd_dbverify = 'dbverify -q ' + pl + ' | tee ' + pl + '.target.dbverify.txt'
+cmd_cdverify = 'cdverify -ie ' + pl + ' | tee ' + pl + '.target.cdverify.txt'
+cmd_dbcount_gen = 'dbcount gen | tee dbcount_gen.txt'
+cmd_dbcount = 'dbcount ' + pl + ' | tee ' + pl + '.' + env + '.dcount.txt'
+data_val = (cmd_dbverify,cmd_cdverify,cmd_dbcount_gen,cmd_dbcount)
+
+
+    # dbcount_prodline = ''
+
+# env_backup2 = env_cmd_backup.export_gen_rolesecclass_backup()
+# env_backup3 = env_cmd_backup.export_gen_ruiprofile_backup()
+
+# env_docstr1 = Env_backup.env_backup.__doc__
+# env_docstr2 = Env_backup.export_gen_rolesecclass_backup.__doc__
+# env_docstr3 = Env_backup.export_gen_ruiprofile_backup.__doc__
+
+# backup_all = (env_docstr1, env_backup1,env_docstr2,env_backup2,env_docstr3,env_backup3)
 
 # dbcount_gen = 'dbcount gen | tee dbcount_gen.txt'
 # export_gen_ruiprofile = ('dbexport -Cz gen_' + pl + '_RoamingUIProfile.zip gen RoamingUIProfile -f' + '"DataArea=\\' + '"' + pl + '\\""' + ' | tee ' + pl + '.target.roaminguiprofile.txt')

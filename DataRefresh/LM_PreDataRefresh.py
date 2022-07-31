@@ -11,6 +11,7 @@ parser.add_argument('-o', '--options', required=True, help="Options", choices=["
 args = parser.parse_args()
 
 # --------------------------------------------------------Global Variables
+
 pfworkunits = '--ignore PfiWorkUnitInputData,AsyncActionRequest,ActionRequest,PfiActivity,PfiActivityVariable,PfiMetrics,PfiMetricsSummary,PfiQueue,PfiQueueAction,PfiQueueAssignment,PfiQueueReminder,PfiQueueTask,PfiWorkunit,PfiWorkunitFolder,PfiWorkunitState,PfiWorkunitVariable,PfiErrorMessage '
 pflows = ' PfiFlowDefinition PfiFlowVersion PfiServiceDefinition PfiServiceFlowDefinition PfiServiceVariable PfiTrigger PfiTriggerFolder PfiTriggerVariable '
 pficonfig = ' PfiChannel PfiConfiguration PfiConfigurationProperty PfiClassicConnection PfiFTPConnection PfiFrontOfficeConnection PfiJDBCConnection PfiJMSConnection PfiLandmarkConnection PfiM3Connection PfiMQConnection PfiSystemCommandConnection PfiTXConnection PfiWebRunConnection '
@@ -174,9 +175,6 @@ def main():
     else:
         print("Invalid option. You may use -h for references.")
     print("\nLog files are stored in: " + wrkdir)
-
-if __name__ == '__main__':
-    main()
 
 
 

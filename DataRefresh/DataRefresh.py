@@ -1,7 +1,9 @@
 import os
+from subprocess import run
 from parameters import dataset as params
-from lm_functions import lm_nowu_backup, lm_full_backup, export_gen_ruiprofile_backup, export_gen_rolesecclass_backup, Env_backup, create_folder
+from lm_functions import Databackup
 from os import path
+from lm_var import *
 
 
 # print(params)
@@ -9,29 +11,64 @@ from os import path
 # print(params["WorkingDirectory"])
 # print(params["SourceProductline"])
 
-#Create directory
-chg = params["WorkingDirectory"]
-wrkdir = os.path.join('D:\\', 'lmsops', 'working', chg)
-subdir = params["EnvType"].upper()
-os.mkdir(wrkdir + '\\' + subdir)
-os.chdir(wrkdir + '\\' + subdir)
 
-#define object
-env_cmd_backup = Env_backup(params["EnvType"], params["SourceProductline"], wrkdir)
 
-# env_backup_sequence
-backup1 = env_cmd_backup.env_backup()
-backup2 = env_cmd_backup.export_gen_rolesecclass_backup()
-backup3 = env_cmd_backup.export_gen_ruiprofile_backup()
+#path = "D:\lmsops\working\"
+
+#subdir = params["EnvType"].upper()
+#workdir = os.path.join(path,chg,subdir)
+#subdir = params["EnvType"].upper()
+#os.mkdir(wrkdir)
+#os.chdir(wrkdir)
+
+
+
+# # 1 : Create directory
+# chg = params["WorkingDirectory"]
+# subdir = params["EnvType"].upper()
+# workdir = os.path.join('D:\\', 'lmsops', 'working', chg,subdir)
+# create_folder(workdir)
+# os.chdir(workdir)
 
 if __name__ == '__main__':
 
-    if params["Strategy"] == "precopy" and params["EnvType"] == "source" and params["Tool"] == "lm":
-        # print(export_gen_ruiprofile_backup(params["SourceProductline"]))
-        # print(export_gen_rolesecclass_backup(params["SourceProductline"]))
-        print(backup1, '\n', backup2, '\n', backup3)
-        print(wrkdir)
-        print(chg)
+# Backup type
+
+    if params["Strategy"] == "precopy" and params["Tool"] == "sql" and params["EnvType"]=="source":
+        print(Databackup.env_backup.__doc__)
+        print(environment_backup,'\n')
+        print(Databackup.exclude_data_backup.__doc__)
+
+    if params["Strategy"] == "precopy" and params["Tool"] == "sql" and params["EnvType"]=="target":
+        print(Databackup.env_backup.__doc__)
+        print(environment_backup,'\n')
+        print(Databackup.exclude_data_backup.__doc__)
+        print(excluded_backup)
+
+    
+    elif params["Strategy"] == "precopy" and params["Tool"] == "lm" and params ["backupType"] == "full":
+        #run(full_backup, shell=True)
+        print(lm_full_backup)
+
+    elif params["Strategy"] == "precopy" and params["Tool"] == "lm" and params ["backupType"] == "noworkunits":
+        #run(lm_nowu_backup, shell=True)
+        print(lm_no_wu_backup)
+
+    # elif params["Strategy"] == "precopy" and params["Tool"] == "sql" and params ["backupType"] == "noworkunits":
+    #     #run(lm_nowu_backup, shell=True)
+    #     print(lm_no_wu_backup)
+
+    else:
+        print("Error!!====Check your parameters====")
+
+for validation in data_val:
+    print('\n',validation)
+# print(rolesec_backup)
+# print(roamiuprof_backup)
+# print(cd_backup)
+# print(cdsec_backup)
+
+
 
 
 

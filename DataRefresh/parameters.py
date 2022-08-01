@@ -3,12 +3,14 @@
 dataset = {
     "Strategy":"precopy",
     "WorkingDirectory":"CHG123456",
-    "EnvType":"source",
-    "backupType":"envonly",
-    "SourceProductline": "lmghr",
+    "EnvType":"target",
+    "backupType":"full",
+    "SourceProductline": "",
     "TargetProductline": "lmghrtest",
-    "Tool":"sql"
+    "Tool":"lm"
 }
 
-# EnvType = source or target
+#Strategy = precopy, postcopy
+#EnvType = source or target
 #backupType = envonly, full, noworkunits
+#Tool = sql,lm

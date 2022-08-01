@@ -38,13 +38,14 @@ class Databackup:
         return f"daexport -t 12 -z {self.env}.{self.pl}.dadata.NoWU.zip {pfworkunits} {self.pl} | tee {self.pl}.{self.env}.noWU.dadata.txt"
       
     def export_gen_ruiprofile_backup(self):
-        '''@@exporting roaming ui profile'''
+        '''@@exporting Identities'''
         return f'dbexport -Cz gen_{self.pl}_RoamingUIProfile.zip gen RoamingUIProfile -f "DataArea=\\"{self.pl}\\"" | tee {self.pl}.target.roaminguiprofile.txt'
     def export_gen_rolesecclass_backup(self):
         '''@@exporting Role SecurityClass'''
         return f'dbexport -Cz gen_{self.pl}_RoleSecurityClass.zip gen RoleSecurityClass -f "DataArea=\\"{self.pl}\\"" | tee {self.pl}.target.rolesecurityclass.txt'
 
     def cddata_backup(self)->str:
+        '''@@export configuration data'''
         return f"cdexport -z {self.env}.{self.pl}.cddata.zip {self.pl} | tee {self.pl}.{self.env}.cddata.txt"
 
     def cddatasec_backup(self)->str:
@@ -53,6 +54,23 @@ class Databackup:
     def exclude_data_backup(self)->str:
         '''@@exporting tables for Post Steps'''
         return f"dbexport -Cz {self.env}.{self.pl}.excluded_tables.zip {self.pl} {excluded_table_list} | tee {self.pl}.excluded_tables.txt "
+
+
+
+class Datacopy:
+    '''Post Copy part'''
+
+
+
+
+
+
+
+
+
+
+
+
 # def Completed_note():
 #     print('\n ...................completed...................\n')
 

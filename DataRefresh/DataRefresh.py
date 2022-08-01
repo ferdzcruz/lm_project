@@ -37,14 +37,14 @@ if __name__ == '__main__':
     if params["Strategy"] == "precopy" and params["Tool"] == "sql" and params["EnvType"]=="source":
         print(Databackup.env_backup.__doc__)
         print(environment_backup,'\n')
-        print(Databackup.exclude_data_backup.__doc__)
 
     if params["Strategy"] == "precopy" and params["Tool"] == "sql" and params["EnvType"]=="target":
         print(Databackup.env_backup.__doc__)
         print(environment_backup,'\n')
         print(Databackup.exclude_data_backup.__doc__)
         print(excluded_backup)
-
+        print(chp_export)
+        print(u_apvenmast_export)
     
     elif params["Strategy"] == "precopy" and params["Tool"] == "lm" and params ["backupType"] == "full":
         #run(full_backup, shell=True)
@@ -54,20 +54,29 @@ if __name__ == '__main__':
         #run(lm_nowu_backup, shell=True)
         print(lm_no_wu_backup)
 
-    # elif params["Strategy"] == "precopy" and params["Tool"] == "sql" and params ["backupType"] == "noworkunits":
-    #     #run(lm_nowu_backup, shell=True)
-    #     print(lm_no_wu_backup)
+    elif params["Strategy"] == "precopy" and params["Tool"] == "sql" and params ["backupType"] == "noworkunits":
+        #run(lm_nowu_backup, shell=True)
+        print(lm_no_wu_backup)
 
-    else:
-        print("Error!!====Check your parameters====")
+    # else:
+    #     print("Error!!====Check your parameters====")
 
+#general backup
+print(pfi_docstr)
+print(cmd_pflows)
+print(cmd_pfconfig)
+print(Databackup.export_gen_ruiprofile_backup.__doc__)
+print(rolesec_backup)
+print(roamiuprof_backup)
+print(Databackup.cddata_backup.__doc__)
+print(cd_backup)
+print(cdsec_backup)
+
+#data validation
+
+print(val_docstr)
 for validation in data_val:
-    print('\n',validation)
-# print(rolesec_backup)
-# print(roamiuprof_backup)
-# print(cd_backup)
-# print(cdsec_backup)
-
+    print(validation)
 
 
 

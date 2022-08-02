@@ -1,7 +1,7 @@
 from os import mkdir, chdir
 import os, errno
 from global_vars import *
-import parameters as args
+import backup_parameters as args
 
 def create_folder(wrkdir):
     try:
@@ -54,19 +54,6 @@ class Databackup:
     def exclude_data_backup(self)->str:
         '''@@exporting tables for Post Steps'''
         return f"dbexport -Cz {self.env}.{self.pl}.excluded_tables.zip {self.pl} {excluded_table_list} | tee {self.pl}.excluded_tables.txt "
-
-
-
-class Datacopy:
-    '''Post Copy part'''
-
-
-
-
-
-
-
-
 
 
 

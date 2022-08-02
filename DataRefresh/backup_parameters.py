@@ -3,11 +3,11 @@
 dataset = {
     "Strategy":"precopy",
     "WorkingDirectory":"CHG123456",
-    "EnvType":"source",
-    "backupType":"noworkunits",
-    "SourceProductline": "lmghr",
-    "TargetProductline": "",
-    "Tool":"lm"
+    "EnvType":"target",
+    "backupType":"envonly",
+    "SourceProductline": "",
+    "TargetProductline": "lmscm",
+    "Tool":"sql"
 }
 
 #Fill out the following;

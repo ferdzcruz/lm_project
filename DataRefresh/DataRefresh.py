@@ -39,25 +39,19 @@ if __name__ == '__main__':
         print(Databackup.env_backup.__doc__)
         print(environment_backup,'\n')
 
-    if  backup_params["Tool"] == "sql" and backup_params["EnvType"]=="target":
-        print(Databackup.env_backup.__doc__)
-        print(environment_backup,'\n')
+    elif  backup_params["Tool"] == "sql" and backup_params["EnvType"]=="target":
+        print(Databackup.env_backup.__doc__,'\n')
+        run(environment_backup,check = True, shell = True)
         print(Databackup.exclude_data_backup.__doc__)
-        print(excluded_backup)
-        print(chp_export)
-        print(u_apvenmast_export)
+        run(excluded_backup,check = True, shell = True)
+        run(chp_export,check = True, shell = True)
+        run(u_apvenmast_export,check = True, shell = True)
     
     elif backup_params["Tool"] == "lm" and backup_params ["backupType"] == "full":
-        #run(full_backup, shell=True)
-        print(lm_full_backup)
+        run(lm_full_backup,check = True, shell = True)
 
     elif backup_params["Tool"] == "lm" and backup_params ["backupType"] == "noworkunits":
-        #run(lm_nowu_backup, shell=True)
-        print(lm_no_wu_backup)
-
-    elif backup_params["Tool"] == "sql" and backup_params ["backupType"] == "noworkunits":
-        #run(lm_nowu_backup, shell=True)
-        print(lm_no_wu_backup)
+        run(lm_no_wu_backup,check = True, shell = True)
 
     else:
         print("Failed!!Check your parameters. The tool doesn't match with the backup type. Rerun the script!")
@@ -75,15 +69,15 @@ if __name__ == '__main__':
 # print(cd_backup)
 # print(cdsec_backup)
 
-for std_backup in strd_backup:
-    print(std_backup)
+#default_backups()
 
 #general
 
 #data validation
-print(val_docstr)
-for validation in data_val:
-    print(validation)
+# print(val_docstr)
+# for validation in data_val:
+#     #run(validation, shell=True)
+#     print(validation)
 
 
 

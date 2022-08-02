@@ -1,6 +1,7 @@
 from lm_functions import Databackup
 from backup_parameters import dataset as backup_params
 from global_vars import pflows, pficonfig
+from subprocess import run
 
 #env_backup
 #Argument
@@ -45,6 +46,14 @@ cmd_pfconfig = f"dbexport -Cz {env}.{pl}.pficonfig.zip {pl} {pficonfig} | tee {p
 chp_export = f"dbexport -Cz {env}.{pl}.CHP.zip {pl} CHP | tee {pl}.{env}.chp.txt"
 u_apvenmast_export = f"dbexport -Cz {env}.{pl}.u_apvenmast.zip {pl} u_apvenmast | tee {pl}.{env}.u_apvenmast.txt"
 
-
-
-strd_backup = (pfi_docstr,cmd_pflows,cmd_pfconfig,Databackup.export_gen_ruiprofile_backup.__doc__,rolesec_backup,roamiuprof_backup,Databackup.cddata_backup.__doc__,cd_backup,cdsec_backup)
+#general backup
+def default_backups():
+    print(pfi_docstr,'\n')
+    run(cmd_pflows, check = True, shell = True)
+    run(cmd_pfconfig, check = True, shell = True)
+    print(Databackup.export_gen_ruiprofile_backup.__doc__,'\n')
+    run(rolesec_backup, check = True, shell = True)
+    run(roamiuprof_backup, check = True, shell = True)
+    print(Databackup.cddata_backup.__doc__,'\n')
+    run(cd_backup, check = True, shell = True)
+    run(cdsec_backup, check = True, shell = True)

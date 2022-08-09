@@ -53,6 +53,7 @@ class Databackup:
         return f"cdexport -z {self.env}.{self.pl}.cddata.zip {self.pl} | tee {self.pl}.{self.env}.cddata.txt"
 
     def cddatasec_backup(self)->str:
+        '''This data should be imported when TARGET configuration data is overwritter by SOURCE'''
         return f"cdexport -z {self.env}.{self.pl}.cddata.security.zip --authsecurity {self.pl} | tee {self.pl}.{self.env}.cddata.security.txt"
 
     def exclude_data_backup(self)->str:
@@ -64,6 +65,17 @@ class Databackup:
     def cmd_pfconfig(self)->str:
         '''@export pficonfig data'''
         return f"dbexport -Cz {self.env}.{self.pl}.pficonfig.zip {self.pl} {pficonfig} | tee {self.pl}.{self.env}.pficonfig.txt"
+    def chp_export(self)->str:
+        '''@export CHP data. This is for LMGHR only'''
+        return f"dbexport -Cz {self.env}.{self.pl}.CHP.zip {self.pl} CHP | tee {self.pl}.{self.env}.chp.txt"
+    def u_apvenmast_export(self)->str:
+        '''This is for MSCM and when LM tool is used'''
+        return f"dbexport -Cz {self.env}.{self.pl}.u_apvenmast.zip {self.pl} u_apvenmast | tee {self.pl}.{self.env}.u_apvenmast.txt"
+
+
+
+#selected data
+
 
 
 #creating object
@@ -89,24 +101,68 @@ cmd_pfconfig = cmd_backup.cmd_pfconfig()
 #excluded_tables_for SQL
 excluded_backup = cmd_backup.exclude_data_backup()
 
-#general backup
+#specific tables
+u_apvenmast_data = cmd_backup.u_apvenmast_export()
+chp_data = cmd_backup.chp_export()
+
+#general backup to restore
 pfi_docstr = "@@Running pfidata export"
-gen_backups = (cmd_pflow,cmd_pfconfig,roamiuprof_backup,rolesec_backup,cd_backup,cdsec_backup)
-def default_backups():
+sql_def_data_backups = (cmd_pflow,cmd_pfconfig,excluded_backup,roamiuprof_backup,rolesec_backup,cd_backup,cdsec_backup,chp_data)
+lm_def_data_backups =(cmd_pflow,cmd_pfconfig,roamiuprof_backup,rolesec_backup,cd_backup,cdsec_backup,u_apvenmast_data)
+def sql_default_backups():
     '''Run the usual backups'''
-    print(f"{info_time} == @@Export pflows, pficonfig, Gen-Secdata and cddata\n")
+    print('='*75)
+    print(f"|{info_time} == @@Export pflows, pficonfig, Gen-Secdata and cddata|")
+    print('='*75)
     time.sleep(2)
-    for gen_backup in gen_backups:
-        print(gen_backup)
+    for sql_gen_backup in sql_def_data_backups:
+        print(sql_gen_backup)
+
+
+def lm_default_backups():
+    '''Run the usual backups'''
+    print('='*75)
+    print(f"|{info_time} == @@Export pflows, pficonfig, Gen-Secdata and cddata|")
+    print('='*75)
+    time.sleep(2)
+    for lm_gen_backup in lm_def_data_backups:
+        print(lm_gen_backup)
+
+class Datavalidations:
+    '''validates before and after'''
+    def __init__(self,env,pl) -> None:
+        self.env = env
+        self.pl = pl
+    
+    def cmd_dbverify(self):
+        '''@@table verification'''
+        return f"dbverify -q {self.pl} | tee {self.pl}.{self.env}.dbverify.txt"
+
+    def cmd_cdverify(self):
+        '''@@cd data verification'''
+        return f"cdverify -ie {self.pl} | tee {self.pl}.{self.env}.cdverify.txt"
+    
+    def cmd_dbcount_gen(self):
+        '''@@dbcount of gen'''
+        return f"dbcount gen | tee dbcount_gen.txt"
+
+    def cmd_dbcount_pl(self):
+        return f"dbcount {self.pl} | tee {self.pl}.{self.env}.dcount.txt"
+
+
+data_validations = Datavalidations(params["EnvType"], \
+    params["SourceProductline"] or params["TargetProductline"])
+cmd_dbverify = data_validations.cmd_dbverify() 
+cmd_cdverify = data_validations.cmd_dbverify()
+cmd_dbcount_gen = data_validations.cmd_dbcount_gen()
+cmd_dbcount_pl =  data_validations.cmd_dbcount_pl()
+data_validation = (cmd_dbverify,cmd_cdverify,cmd_dbcount_gen,cmd_dbcount_pl)
+
+
+def Default_data_validations():
+    '''@@validating gen and pl'''
+    for data_val in data_validation:
+        print(data_val)
 
 
 
-#     print(pfi_docstr,'\n')
-#     run(cmd_pflow, check = True, shell = True)
-#     run(cmd_pfconfig, check = True, shell = True)
-#     print(roamiuprof_backup.__doc__,'\n')
-#     run(rolesec_backup, check = True, shell = True)
-#     run(roamiuprof_backup, check = True, shell = True)
-#     print(Databackup.cddata_backup.__doc__,'\n')
-#     run(cd_backup, check = True, shell = True)
-#     run(cdsec_backup, check = True, shell = True)

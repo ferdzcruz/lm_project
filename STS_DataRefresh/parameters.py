@@ -2,12 +2,12 @@
 #This will be the template for DataCopy
 dataset = {
     "Strategy":"backup",
-    "Tool":"",
+    "Tool":"lm",
     "EnvType":"source",
-    "WorkingDirectory":"",   
-    "backupType":"full",
+    "WorkingDirectory":"",  
+    "backupType":"nowu",
     "SourceProductline": "lmghr",
-    "TargetProductline": "lmghrtest",
+    "TargetProductline": "",
     "cddata":"",
     "pfdata":"",
     "clnwks":""
@@ -18,7 +18,7 @@ dataset = {
 #--tool: lm,sql
 #envtype: src, tgt
 #--WorkingDirectory: CHG######
-#--backupType: env, full, noworkunits(lm only)
+#--backupType: env, full, nowu(lm only)
 #--cddata: y,n
 #--pfdata: y,n
 #clnwks: y,n

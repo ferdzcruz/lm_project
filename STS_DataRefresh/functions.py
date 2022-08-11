@@ -1,5 +1,6 @@
 from subprocess import call as run
-from variables import pfworkunits,pflows,excluded_table_list,pficonfig
+#from variables import pfworkunits,pflows,excluded_table_list,pficonfig, admin_apps
+from variables import *
 from parameters import dataset as params
 import datetime, time, errno, os
 
@@ -7,7 +8,8 @@ import datetime, time, errno, os
 now = datetime.datetime.now()
 info_time = now.strftime("%Y-%m-%d %H:%M:%S")
 
-
+#Functions outside class
+#create folder
 def create_folder(wrkdir):
     try:
         os.makedirs(wrkdir)
@@ -19,6 +21,26 @@ def create_folder(wrkdir):
             raise
     os.chdir(wrkdir)
 
+#Stop/Start Apps
+
+
+def admin_mode():
+    print('\n Running admin mode.......\n')
+    for am in admin_apps:
+        print(am)
+
+def start_mode():
+    print('\n System Restart.......\n')
+    for sm in start_apps:
+        print(sm)
+
+def pause():
+    print('')
+    os.system("pause")
+    print('')
+
+def completed_note():
+    print(f'\n {info_time} ==> completed\n')
 
 
 #main command
@@ -72,12 +94,6 @@ class Databackup:
         '''This is for MSCM and when LM tool is used'''
         return f"dbexport -Cz {self.env}.{self.pl}.u_apvenmast.zip {self.pl} u_apvenmast | tee {self.pl}.{self.env}.u_apvenmast.txt"
 
-
-
-#selected data
-
-
-
 #creating object
 cmd_backup = Databackup(params["EnvType"], params["SourceProductline"] or params['TargetProductline'])
 
@@ -118,7 +134,6 @@ def sql_default_backups():
     for sql_gen_backup in sql_def_data_backups:
         print(sql_gen_backup)
 
-
 def lm_default_backups():
     '''Run the usual backups'''
     print('='*75)
@@ -158,11 +173,109 @@ cmd_dbcount_gen = data_validations.cmd_dbcount_gen()
 cmd_dbcount_pl =  data_validations.cmd_dbcount_pl()
 data_validation = (cmd_dbverify,cmd_cdverify,cmd_dbcount_gen,cmd_dbcount_pl)
 
-
 def Default_data_validations():
     '''@@validating gen and pl'''
     for data_val in data_validation:
         print(data_val)
 
+
+#====================End of Backup
+
+class DataRestore:
+    '''Will run daimport command'''
+    def __init__(self, bkpsrc, src, tgt):
+        self.bkpsrc = bkpsrc
+        self.src = src
+        self.tgt = tgt
+
+    def daimport_data_env(self):
+        return f'daimport --sameenv -ot 12 -w --deletedata -I {self.bkpsrc}source.{self.src}.dadata.env.zip {self.src}={self.tgt} | tee {self.tgt}.env.daimport.txt'
+
+    def daimport_full(self):
+        return f'daimport --sameenv -ot 12 -w --deletedata -I {self.bkpsrc}source.{self.src}.dadata.full.zip {self.src}={self.tgt} | tee {self.tgt}.daimport.txt'
+
+    def daimport_noWU(self):
+        return f'daimport --sameenv -ot 12 -w --deletedata -I {self.bkpsrc}source.{self.src}.dadata.NoWU.zip {self.src}={self.tgt} | tee {self.tgt}.daimport.txt'
+
+#command as variable
+bckpsrc = os.path.join('D:\\', 'lmsops', 'working',params["WorkingDirectory"],'SOURCE\\')
+src_pl = params["SourceProductline"]
+tgt_pl = params["TargetProductline"]
+pflow = params["pfdata"]
+cd_data = params["cddata"]
+daimport_l_full = f'daimport -l {bckpsrc}source.{src_pl}.dadata.full.zip'
+daimport_l_noWU = f'daimport -l {bckpsrc}source.{src_pl}.dadata.NoWU.zip'
+daimport_l_env = f'daimport -l {bckpsrc}source.{src_pl}.dadata.env.zip'
+
+
+def dbimport_pfconfig():
+    dbdeletedata_data_pfconfig = f'dbdeletedata {tgt_pl} {pficonfig} -Y'
+    pficonfig_revert = f'dbimport -Cz {bckpsrc}target.{tgt_pl}.pficonfig.zip {tgt_pl} | tee {tgt_pl}.pficonfig.revert.txt'
+    print('\nReverting PFI configurations...............\n')
+    #run(dbdeletedata_data_pfconfig, shell=True)
+    print(dbdeletedata_data_pfconfig)
+    print(pficonfig_revert)
+    #run(pficonfig_revert, shell=True)
+    completed_note()
+
+
+def dbimport_pflows():
+    dbdeletedata_data_flow = f'dbdeletedata {tgt_pl} {pflows} -Y'
+    pflows_overwrite = f'dbimport -Cz {bckpsrc}source.{src_pl}.pflows.zip {tgt_pl} | tee {tgt_pl}.pflows.overwrite.txt'
+    pflows_revert = f'dbimport -Cz {bckpsrc}target.{tgt_pl}.pflows.zip {tgt_pl} | tee {tgt_pl}.pflows.revert.txt'
+    #run(dbdeletedata_data_flow, shell=True)
+    print(dbdeletedata_data_flow)
+    
+    if pflow == 'y':
+        print('\nOverwriting the Pflows Data...............\n')
+        #run(pflows_overwrite, shell=True)
+        print(pflows_overwrite)
+        completed_note()
+    elif pflow == 'n':
+        print('\nReverting the Pflows Data.................\n')
+        #run(pflows_revert, shell=True)
+        print(pflows_revert)
+        completed_note()
+
+def cdimport_data():
+    cdimport_overwrite = f'cdimport -oI {bckpsrc}source.{src_pl}.cddata.zip --keepactor {tgt_pl} | tee {tgt_pl}.cdoverwrite.txt'
+    cdimport_revert_sec = f'cdimport -oI {bckpsrc}target.{tgt_pl}.cddata.security.zip --keepactor {tgt_pl} | tee {tgt_pl}.cdrevert.security.txt'
+    cdimport_revert = f'cdimport -oI {bckpsrc}target.{tgt_pl}.cddata.zip --keepactor {tgt_pl} | tee {tgt_pl}.cdrevert.txt'
+    if cd_data == 'n':
+        print('\nReverting the Configuration Data...................\n')
+        #run(cdimport_revert, shell=True)
+        print(cdimport_revert)
+        completed_note()
+    elif cd_data == 'y':
+        print('\nOverwriting the Configuration Data...................\n')
+        #run(cdimport_overwrite, shell=True)
+        #run(cdimport_revert_sec, shell=True)
+        print(cdimport_overwrite)
+        print(cdimport_revert_sec)
+        completed_note()
+
+
+def revert_table_list():
+    dbdeletedata_data_excludedtables = f'dbdeletedata {tgt_pl} {excluded_table_list} -Y'
+    table_list_revert = f'dbimport -Cz{bckpsrc}target.{tgt_pl}.excluded_tables.zip {tgt_pl} | tee {tgt_pl}.table_list.revert.txt'
+    print('\nReverting Configuration Data...................\n')
+    #run(dbdeletedata_data_excludedtables, shell=True)
+    print(dbdeletedata_data_excludedtables)
+    print(table_list_revert)
+    #run(table_list_revert, shell=True)
+    completed_note()
+
+def cleanup_workunits():
+    delete_workunits = f'dbdeletedata {tgt_pl} {workunits_tables} | tee {tgt_pl}.delete.workunits.data.txt'
+    backup_async_actionrequest = 'dbexport -Cz gen_AsyncActionRequest.zip gen AsyncActionRequest -f' + '"DataArea=\\' + '"' + tgt_pl + '\\""'
+    delete_async_actionrequest = 'dbdeletedata gen AsyncActionRequest -f' + '"DataArea=\\' + '"' + tgt_pl + '\\"" -Y'
+    print('\nRunning Cleanup of WorkUnits......\n')
+    #subprocess.call(delete_workunits, shell=True)
+    print(delete_workunits)
+    #subprocess.call(backup_async_actionrequest, shell=True)
+    print(backup_async_actionrequest)
+    #subprocess.call(delete_async_actionrequest, shell=True)
+    print(delete_async_actionrequest)
+    completed_note()
 
 

@@ -1,16 +1,16 @@
 
 #This will be the template for DataCopy
 dataset = {
-    "Strategy":"backup",
+    "Strategy":"restore",
     "Tool":"lm",
-    "EnvType":"source",
-    "WorkingDirectory":"",  
+    "EnvType":"target",
+    "WorkingDirectory":"CHG123456",
     "backupType":"nowu",
     "SourceProductline": "lmghr",
-    "TargetProductline": "",
-    "cddata":"",
-    "pfdata":"",
-    "clnwks":""
+    "TargetProductline": "lmghrtest",
+    "cddata":"y",
+    "pfdata":"y",
+    "clnwks":"y"
 }
 
 #Fill out the following;

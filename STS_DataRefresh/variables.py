@@ -26,5 +26,3 @@ ping30 = 'ping -n 30 localhost'
 ping500 = 'ping -n 500 localhost'
 admin_apps = (ibm_app_stop,ibm_node_stop,ibm_dmg_stop,lm_adminlaw)
 start_apps = (lm_stoplaw,ping30,lm_startlaw,ping500,ibm_dmg_start,ibm_node_start,ibm_app_start)
-
-

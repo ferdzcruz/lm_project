@@ -4,24 +4,19 @@ from functions import *
 import os,sys
 from parameters import dataset as params
 
-
 # 1 : Create directory
-# chg = params["WorkingDirectory"]
+chg = params["WorkingDirectory"]
 # subdir = params["EnvType"].upper()
 # workdir = os.path.join('D:\\', 'lmsops', 'working', chg,subdir)
 # create_folder(workdir)
 # os.chdir(workdir)
-
-
 ####backup 
-
 cmd_backup = Databackup(params["EnvType"], params["SourceProductline"] or params['TargetProductline'])
 bckpsrc = os.path.join('D:\\', 'lmsops', 'working',params["WorkingDirectory"],'SOURCE\\')
 restore_data = DataRestore(bckpsrc,params["SourceProductline"], params["TargetProductline"])
-
 #SQL Tool
-
 def backup_main():
+    '''Data backup Part'''
 
     if params["Tool"] == 'sql':
         params["backupType"] == 'env'
@@ -60,37 +55,50 @@ def backup_main():
     sys.exit(0)
 
 ###Restore
-
-
 def restore_main():
-#    if params["Strategy"] == 'restore' and params["Tool"] == 'sql':
+    '''Data Restore part'''
     admin_mode()
+    print("@@verifying data backup")
+
     if params["Tool"] == 'sql':
         params["backupType"] == 'env'
         print(daimport_l_env)
         pause()
+        print('='*47)
+        print('|',info_time,restore_data.daimport_data_env.__doc__)
+        print('='*47)
         print(restore_data.daimport_data_env())
+        completed_note()
         revert_table_list()
 
     if params["Tool"] == 'lm' and params["backupType"] == 'full':
         print(daimport_l_full)
         pause()
+        print('='*74)
+        print('|',info_time,restore_data.daimport_full.__doc__)
+        print('='*74)
         print(restore_data.daimport_full())
+        completed_note()
 
     if params["Tool"] == 'lm' and params["backupType"] == 'nowu':
         print(daimport_l_noWU)
         pause()
+        print('='*68)
+        print('|',info_time,restore_data.daimport_noWU.__doc__)
+        print('='*68)
         print(restore_data.daimport_noWU())
+        completed_note()
         cleanup_workunits()
 
+    
     dbimport_pfconfig()
     dbimport_pflows()
     cdimport_data()
-    Default_data_validations()
+    Default_after_data_validations()
     start_mode()
-
-
-
+    completed_note()
+    print(f"Note: You may find all the logs in D:\lmsops\working\{chg}")
+    time.sleep(2)
 
 if __name__ == '__main__':
     if params["Strategy"] == 'restore':

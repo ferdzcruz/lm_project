@@ -3,6 +3,7 @@
 from functions import *
 import os,sys
 from parameters import dataset as params
+#import subprocess as run
 
 # 1 : Create directory
 chg = params["WorkingDirectory"]
@@ -23,7 +24,7 @@ def backup_main():
         print('='*52)
         print('|',info_time, cmd_backup.env_backup.__doc__,'|')
         print('='*52)
-        print(cmd_backup.env_backup())
+        run(cmd_backup.env_backup(), check = True, shell=True)
         print('\n')
         sql_default_backups()
 
@@ -32,14 +33,14 @@ def backup_main():
         print('='*51)
         print('|',info_time, cmd_backup.full_backup.__doc__,'|')
         print('='*51)
-        print(cmd_backup.full_backup())
+        run(cmd_backup.full_backup(), check = True, shell=True)
         print('\n')
         lm_default_backups()
     elif params["Tool"] == 'lm' and params["backupType"] == 'nowu':
         print('='*52)
         print('|',info_time,cmd_backup.nowu_backup.__doc__,'|')   
         print('='*52)
-        print(cmd_backup.nowu_backup())
+        run(cmd_backup.nowu_backup() ,check=True,shell=True)
         print('\n')
         lm_default_backups()
     
@@ -67,7 +68,7 @@ def restore_main():
         print('='*47)
         print('|',info_time,restore_data.daimport_data_env.__doc__)
         print('='*47)
-        print(restore_data.daimport_data_env())
+        run(restore_data.daimport_data_env(),check=True,shell=True)
         completed_note()
         revert_table_list()
 
@@ -77,7 +78,7 @@ def restore_main():
         print('='*74)
         print('|',info_time,restore_data.daimport_full.__doc__)
         print('='*74)
-        print(restore_data.daimport_full())
+        run(restore_data.daimport_full(),check=True,shell=True)
         completed_note()
 
     if params["Tool"] == 'lm' and params["backupType"] == 'nowu':
@@ -86,11 +87,10 @@ def restore_main():
         print('='*68)
         print('|',info_time,restore_data.daimport_noWU.__doc__)
         print('='*68)
-        print(restore_data.daimport_noWU())
+        run(restore_data.daimport_noWU(),check=True, shell=True)
         completed_note()
         cleanup_workunits()
-
-    
+  
     dbimport_pfconfig()
     dbimport_pflows()
     cdimport_data()

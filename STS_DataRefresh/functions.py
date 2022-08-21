@@ -1,4 +1,5 @@
 from subprocess import call as run
+from tabnanny import check
 #from variables import pfworkunits,pflows,excluded_table_list,pficonfig, admin_apps
 from variables import *
 from parameters import dataset as params
@@ -28,7 +29,7 @@ def admin_mode():
     print('|',info_time, '@@Running admin mode.......|')
     print('='*50)
     for am in admin_apps:
-        print(am)
+        run(am, check=True, shell=True)
     time.sleep(2)
 
 def start_mode():
@@ -36,7 +37,7 @@ def start_mode():
     print('|System Restart.......|')
     print('='*23)
     for sm in start_apps:
-        print(sm)
+        run(sm, check=True, shell=True)
     time.sleep(2)
 
 def pause():
@@ -140,7 +141,7 @@ def sql_default_backups():
     print('='*75)
     time.sleep(2)
     for sql_gen_backup in sql_def_data_backups:
-        print(sql_gen_backup)
+        run(sql_gen_backup, check=True, shell=True)
 
 def lm_default_backups():
     '''Run the usual backups'''
@@ -149,7 +150,7 @@ def lm_default_backups():
     print('='*75)
     time.sleep(2)
     for lm_gen_backup in lm_def_data_backups:
-        print(lm_gen_backup)
+        run(lm_gen_backup, check=True, shell=True)
 
 class Datavalidations:
     '''validates before and after'''
@@ -192,12 +193,12 @@ comp_data_validation = (final_cmd_dbverify,final_cmd_cdverify,final_cmd_dbcount_
 def Default_data_validations():
     '''@@validating gen and pl'''
     for data_val in data_validation:
-        print(data_val)
+        run(data_val, check=True, shell=True)
 
 def Default_after_data_validations():
     '''@@validating gen and pl'''
     for comp_data_val in comp_data_validation:
-        print(comp_data_val)
+        run(comp_data_val, check=True, shell=True)
 
 #====================End of Backup
 
@@ -252,13 +253,11 @@ def dbimport_pflows():
     
     if pflow == 'y':
         print('\n@@Overwriting the Pflows Data...............\n')
-        #run(pflows_overwrite, shell=True)
-        print(pflows_overwrite)
+        run(pflows_overwrite, Check=True, shell=True)
         completed_note()
     elif pflow == 'n':
         print('\n@@Reverting the Pflows Data.................\n')
-        #run(pflows_revert, shell=True)
-        print(pflows_revert)
+        run(pflows_revert, Check=True,shell=True)
         completed_note()
 
 def cdimport_data():
@@ -267,15 +266,12 @@ def cdimport_data():
     cdimport_revert = f'cdimport -oI {bckpsrc}target.{tgt_pl}.cddata.zip --keepactor {tgt_pl} | tee {tgt_pl}.cdrevert.txt'
     if cd_data == 'n':
         print('\n@@Reverting the Configuration Data...................\n')
-        #run(cdimport_revert, shell=True)
-        print(cdimport_revert)
+        run(cdimport_revert, Check=True, shell=True)
         completed_note()
     elif cd_data == 'y':
         print('\n@@Overwriting the Configuration Data...................\n')
-        #run(cdimport_overwrite, shell=True)
-        #run(cdimport_revert_sec, shell=True)
-        print(cdimport_overwrite)
-        print(cdimport_revert_sec)
+        run(cdimport_overwrite, Check=True, shell=True)
+        run(cdimport_revert_sec, Check=True, shell=True)
         completed_note()
 
 
@@ -283,10 +279,8 @@ def revert_table_list():
     dbdeletedata_data_excludedtables = f'dbdeletedata {tgt_pl} {excluded_table_list} -Y'
     table_list_revert = f'dbimport -Cz{bckpsrc}target.{tgt_pl}.excluded_tables.zip {tgt_pl} | tee {tgt_pl}.table_list.revert.txt'
     print('\n@@Reverting Configuration Data...................\n')
-    #run(dbdeletedata_data_excludedtables, shell=True)
-    print(dbdeletedata_data_excludedtables)
-    print(table_list_revert)
-    #run(table_list_revert, shell=True)
+    run(dbdeletedata_data_excludedtables, Check=True, shell=True)
+    run(table_list_revert, Check=True, shell=True)
     completed_note()
 
 def cleanup_workunits():
@@ -294,10 +288,7 @@ def cleanup_workunits():
     backup_async_actionrequest = 'dbexport -Cz gen_AsyncActionRequest.zip gen AsyncActionRequest -f' + '"DataArea=\\' + '"' + tgt_pl + '\\""'
     delete_async_actionrequest = 'dbdeletedata gen AsyncActionRequest -f' + '"DataArea=\\' + '"' + tgt_pl + '\\"" -Y'
     print('\n@@Running Cleanup of WorkUnits......\n')
-    #subprocess.call(delete_workunits, shell=True)
-    print(delete_workunits)
-    #subprocess.call(backup_async_actionrequest, shell=True)
-    print(backup_async_actionrequest)
-    #subprocess.call(delete_async_actionrequest, shell=True)
-    print(delete_async_actionrequest)
+    run(delete_workunits, Check=True, shell=True)
+    #run(backup_async_actionrequest, shell=True)- Enabled this if you need backup ActionRequest before deleting
+    run(delete_async_actionrequest, Check=True, shell=True)
     completed_note()

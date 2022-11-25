@@ -16,10 +16,9 @@ usage: FixIndexMismatch.py [-h] -p  -wd  -o
 To Fix the Index Mismatch
 
 optional arguments:
-  -h, --help            show this help message and exit
-  -p , --prodline       Enter dataarea ex: lmghr
-  -wd , --working_directory
-                        Enter working directory ex: CHG12345
-  -o , --option         Enter what is needed to fix
+  -h,   --help                show this help message and exit
+  -p ,  --prodline            Enter dataarea ex: lmghr
+  -wd , --working_directory   Enter working directory ex: CHG12345
+  -o , --option               Enter what is needed to fix
 
 

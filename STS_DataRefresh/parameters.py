@@ -1,5 +1,5 @@
 
-#This will be the template for DataCopy
+#This will be the template for DataCopy (backup, data restore)
 dataset = {
     "Strategy":"restore",
     "Tool":"sql",
@@ -12,13 +12,3 @@ dataset = {
     "pfdata":"y",
     "clnwks":"y"
 }
-
-#Fill out the following;
-#--strategy: backup,restore 
-#--tool: lm,sql
-#envtype: src, tgt
-#--WorkingDirectory: CHG######
-#--backupType: env, full, nowu(lm only)
-#--cddata: y,n
-#--pfdata: y,n
-#clnwks: y,n

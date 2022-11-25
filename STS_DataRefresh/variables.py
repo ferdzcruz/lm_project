@@ -1,8 +1,13 @@
 from parameters import dataset as backup_params
 
-
 #global vars
 #Group of PfiTables
+
+'''
+in the future, you can update this based on the changes of the way
+how landmark and it's productline is refresh
+'''
+
 pfworkunits = '--ignore PfiWorkUnitInputData,AsyncActionRequest,ActionRequest,PfiActivity,PfiActivityVariable,PfiMetrics,PfiMetricsSummary,PfiQueue,PfiQueueAction,PfiQueueAssignment,PfiQueueReminder,PfiQueueTask,PfiWorkunit,PfiWorkunitFolder,PfiWorkunitState,PfiWorkunitVariable,PfiErrorMessage'
 pflows = 'PfiFlowDefinition PfiFlowVersion PfiServiceDefinition PfiServiceFlowDefinition PfiServiceVariable PfiTrigger PfiTriggerFolder PfiTriggerVariable'
 pficonfig = 'PfiChannel PfiConfiguration PfiConfigurationProperty PfiClassicConnection PfiFTPConnection PfiFrontOfficeConnection PfiJDBCConnection PfiJMSConnection PfiLandmarkConnection PfiM3Connection PfiMQConnection PfiSystemCommandConnection PfiTXConnection PfiWebRunConnection'

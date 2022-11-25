@@ -1,5 +1,4 @@
 from subprocess import call as run
-from tabnanny import check
 #from variables import pfworkunits,pflows,excluded_table_list,pficonfig, admin_apps
 from variables import *
 from parameters import dataset as params
@@ -14,10 +13,10 @@ info_time = now.strftime("%Y-%m-%d %H:%M:%S")
 def create_folder(wrkdir):
     try:
         os.makedirs(wrkdir)
-        print("Folder " + wrkdir + " created.")
+        print("SUCCESS: Folder " + wrkdir + " is created.\n")
     except OSError as fileexist:
         if fileexist.errno == errno.EEXIST:
-            print("Folder " + wrkdir + " already exists.")
+            print("Folder " + wrkdir + " already exists.Cleanup the files if you wish to use the same directory!\n")
         else:
             raise
     os.chdir(wrkdir)
@@ -29,7 +28,7 @@ def admin_mode():
     print('|',info_time, '@@Running admin mode.......|')
     print('='*50)
     for am in admin_apps:
-        run(am, check=True, shell=True)
+        run(am, shell=True)
     time.sleep(2)
 
 def start_mode():
@@ -37,14 +36,14 @@ def start_mode():
     print('|System Restart.......|')
     print('='*23)
     for sm in start_apps:
-        run(sm, check=True, shell=True)
+        run(sm, shell=True)
     time.sleep(2)
 
 def pause():
     print('')
     os.system("pause")
     print('')
-    
+
 
 def completed_note():
     print('='*35)
@@ -71,7 +70,7 @@ class Databackup:
     def nowu_backup(self):
         '''@@exporting no workunit data'''
         return f"daexport -t 12 -z {self.env}.{self.pl}.dadata.NoWU.zip {pfworkunits} {self.pl} | tee {self.pl}.{self.env}.noWU.dadata.txt"
-      
+
     def export_gen_ruiprofile_backup(self):
         '''@@exporting Identities'''
         return f'dbexport -Cz gen_{self.pl}_RoamingUIProfile.zip gen RoamingUIProfile -f "DataArea=\\"{self.pl}\\"" | tee {self.pl}.{self.env}.roaminguiprofile.txt'
@@ -106,7 +105,7 @@ class Databackup:
 #creating object
 cmd_backup = Databackup(params["EnvType"], params["SourceProductline"] or params['TargetProductline'])
 
-#backup Type
+# backup Type
 environment_backup = cmd_backup.env_backup()
 lm_full_backup = cmd_backup.full_backup()
 lm_no_wu_backup = cmd_backup.nowu_backup()
@@ -141,7 +140,7 @@ def sql_default_backups():
     print('='*75)
     time.sleep(2)
     for sql_gen_backup in sql_def_data_backups:
-        run(sql_gen_backup, check=True, shell=True)
+        run(sql_gen_backup, shell=True)
 
 def lm_default_backups():
     '''Run the usual backups'''
@@ -150,14 +149,14 @@ def lm_default_backups():
     print('='*75)
     time.sleep(2)
     for lm_gen_backup in lm_def_data_backups:
-        run(lm_gen_backup, check=True, shell=True)
+        run(lm_gen_backup, shell=True)
 
 class Datavalidations:
     '''validates before and after'''
     def __init__(self,env,pl) -> None:
         self.env = env
         self.pl = pl
-    
+
     def cmd_dbverify(self):
         '''@@table verification'''
         return f"dbverify -q {self.pl} | tee {self.pl}.{self.env}.dbverify.txt"
@@ -165,7 +164,7 @@ class Datavalidations:
     def cmd_cdverify(self):
         '''@@cd data verification'''
         return f"cdverify -ie {self.pl} | tee {self.pl}.{self.env}.cdverify.txt"
-    
+
     def cmd_dbcount_gen(self):
         '''@@dbcount of gen'''
         return f"dbcount gen | tee dbcount_gen.txt"
@@ -177,12 +176,12 @@ class Datavalidations:
 data_validations = Datavalidations(params["EnvType"], \
     params["SourceProductline"] or params["TargetProductline"])
 comp_data_validations = Datavalidations(params["EnvType"], params["TargetProductline"])
-cmd_dbverify = data_validations.cmd_dbverify() 
+cmd_dbverify = data_validations.cmd_dbverify()
 cmd_cdverify = data_validations.cmd_dbverify()
 cmd_dbcount_gen = data_validations.cmd_dbcount_gen()
 cmd_dbcount_pl =  data_validations.cmd_dbcount_pl()
 
-final_cmd_dbverify = comp_data_validations.cmd_dbverify() 
+final_cmd_dbverify = comp_data_validations.cmd_dbverify()
 final_cmd_cdverify = comp_data_validations.cmd_dbverify()
 final_cmd_dbcount_gen = comp_data_validations.cmd_dbcount_gen()
 final_cmd_dbcount_pl =  comp_data_validations.cmd_dbcount_pl()
@@ -193,12 +192,12 @@ comp_data_validation = (final_cmd_dbverify,final_cmd_cdverify,final_cmd_dbcount_
 def Default_data_validations():
     '''@@validating gen and pl'''
     for data_val in data_validation:
-        run(data_val, check=True, shell=True)
+        run(data_val, shell=True)
 
 def Default_after_data_validations():
     '''@@validating gen and pl'''
     for comp_data_val in comp_data_validation:
-        run(comp_data_val, check=True, shell=True)
+        run(comp_data_val, shell=True)
 
 #====================End of Backup
 
@@ -211,7 +210,7 @@ class DataRestore:
 
     def daimport_data_env(self):
         '''|@@daimport env only....|'''
-        
+
         return f'daimport --sameenv -ot 12 -w --deletedata -I {self.bkpsrc}source.{self.src}.dadata.env.zip {self.src}={self.tgt} | tee {self.tgt}.env.daimport.txt'
 
     def daimport_full(self):
@@ -237,10 +236,8 @@ def dbimport_pfconfig():
     dbdeletedata_data_pfconfig = f'dbdeletedata {tgt_pl} {pficonfig} -Y'
     pficonfig_revert = f'dbimport -Cz {bckpsrc}target.{tgt_pl}.pficonfig.zip {tgt_pl} | tee {tgt_pl}.pficonfig.revert.txt'
     print('\n@@Reverting PFI configurations...............\n')
-    #run(dbdeletedata_data_pfconfig, shell=True)
-    print(dbdeletedata_data_pfconfig)
-    print(pficonfig_revert)
-    #run(pficonfig_revert, shell=True)
+    run(dbdeletedata_data_pfconfig, shell=True)
+    run(pficonfig_revert, shell=True)
     completed_note()
 
 
@@ -248,16 +245,15 @@ def dbimport_pflows():
     dbdeletedata_data_flow = f'dbdeletedata {tgt_pl} {pflows} -Y'
     pflows_overwrite = f'dbimport -Cz {bckpsrc}source.{src_pl}.pflows.zip {tgt_pl} | tee {tgt_pl}.pflows.overwrite.txt'
     pflows_revert = f'dbimport -Cz {bckpsrc}target.{tgt_pl}.pflows.zip {tgt_pl} | tee {tgt_pl}.pflows.revert.txt'
-    #run(dbdeletedata_data_flow, shell=True)
-    print(dbdeletedata_data_flow)
-    
+    run(dbdeletedata_data_flow, shell=True)
+
     if pflow == 'y':
         print('\n@@Overwriting the Pflows Data...............\n')
-        run(pflows_overwrite, Check=True, shell=True)
+        run(pflows_overwrite, shell=True)
         completed_note()
     elif pflow == 'n':
         print('\n@@Reverting the Pflows Data.................\n')
-        run(pflows_revert, Check=True,shell=True)
+        run(pflows_revert, check=True,shell=True)
         completed_note()
 
 def cdimport_data():
@@ -266,12 +262,12 @@ def cdimport_data():
     cdimport_revert = f'cdimport -oI {bckpsrc}target.{tgt_pl}.cddata.zip --keepactor {tgt_pl} | tee {tgt_pl}.cdrevert.txt'
     if cd_data == 'n':
         print('\n@@Reverting the Configuration Data...................\n')
-        run(cdimport_revert, Check=True, shell=True)
+        run(cdimport_revert, shell=True)
         completed_note()
     elif cd_data == 'y':
         print('\n@@Overwriting the Configuration Data...................\n')
-        run(cdimport_overwrite, Check=True, shell=True)
-        run(cdimport_revert_sec, Check=True, shell=True)
+        run(cdimport_overwrite, shell=True)
+        run(cdimport_revert_sec, shell=True)
         completed_note()
 
 
@@ -279,8 +275,8 @@ def revert_table_list():
     dbdeletedata_data_excludedtables = f'dbdeletedata {tgt_pl} {excluded_table_list} -Y'
     table_list_revert = f'dbimport -Cz{bckpsrc}target.{tgt_pl}.excluded_tables.zip {tgt_pl} | tee {tgt_pl}.table_list.revert.txt'
     print('\n@@Reverting Configuration Data...................\n')
-    run(dbdeletedata_data_excludedtables, Check=True, shell=True)
-    run(table_list_revert, Check=True, shell=True)
+    run(dbdeletedata_data_excludedtables, shell=True)
+    run(table_list_revert, shell=True)
     completed_note()
 
 def cleanup_workunits():
@@ -288,7 +284,7 @@ def cleanup_workunits():
     backup_async_actionrequest = 'dbexport -Cz gen_AsyncActionRequest.zip gen AsyncActionRequest -f' + '"DataArea=\\' + '"' + tgt_pl + '\\""'
     delete_async_actionrequest = 'dbdeletedata gen AsyncActionRequest -f' + '"DataArea=\\' + '"' + tgt_pl + '\\"" -Y'
     print('\n@@Running Cleanup of WorkUnits......\n')
-    run(delete_workunits, Check=True, shell=True)
+    run(delete_workunits, shell=True)
     #run(backup_async_actionrequest, shell=True)- Enabled this if you need backup ActionRequest before deleting
-    run(delete_async_actionrequest, Check=True, shell=True)
+    run(delete_async_actionrequest, shell=True)
     completed_note()
